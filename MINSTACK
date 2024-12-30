@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_SIZE 100
+
+
+typedef struct {
+    int stack[MAX_SIZE];    
+    int minStack[MAX_SIZE]; 
+    int top;                
+} MinStack;
+
+
+void initStack(MinStack* minStack) {
+    minStack->top = -1;
+}
+
+
+int isFull(MinStack* minStack) {
+    return minStack->top == MAX_SIZE - 1;
+}
+
+int isEmpty(MinStack* minStack) {
+    return minStack->top == -1;
+}
+
+void push(MinStack* minStack, int value) {
+    if (isFull(minStack)) {
+        printf("Stack is full!\n");
+        return;
+    }
+
+    minStack->top++;
+    minStack->stack[minStack->top] = value;
+
+      if (minStack->top == 0) {
+        minStack->minStack[minStack->top] = value;
+    } else {
+        minStack->minStack[minStack->top] = (value < minStack->minStack[minStack->top - 1]) ? value : minStack->minStack[minStack->top - 1];
+    }
+}
+
+int pop(MinStack* minStack) {
+    if (isEmpty(minStack)) {
+        printf("Stack is empty!\n");
+        return INT_MIN;
+    }
+
+    int poppedValue = minStack->stack[minStack->top];
+    minStack->top--;
+
+    return poppedValue;
+}
+
+int peek(MinStack* minStack) {
+    if (isEmpty(minStack)) {
+        printf("Stack is empty!\n");
+        return INT_MIN;
+    }
+    return minStack->stack[minStack->top];
+}
+
+int getMin(MinStack* minStack) {
+    if (isEmpty(minStack)) {
+        printf("Stack is empty!\n");
+        return INT_MIN;
+    }
+    return minStack->minStack[minStack->top];
+}
+
+int main() {
+    MinStack minStack;
+    initStack(&minStack);
+
+    push(&minStack, 3);
+    push(&minStack, 5);
+    printf("Minimum: %d\n", getMin(&minStack)); 
+    push(&minStack, 2);
+    push(&minStack, 8);
+    printf("Minimum: %d\n", getMin(&minStack)); 
+
+    pop(&minStack);
+    printf("Minimum: %d\n", getMin(&minStack)); 
+
+    pop(&minStack);
+    printf("Top: %d\n", peek(&minStack));
+    printf("Minimum: %d\n", getMin(&minStack)); 
+
+    return 0;
+}
